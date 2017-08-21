@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Seting working directory
 pathToProject <- "~/Documents/projects/R/data-science-especialization/Get And Cleaning Data/Week 4/Getting-and-Cleaning-Data-Course-Project"
 setwd(pathToProject)
@@ -11,35 +13,96 @@ downloadOriginalData <- function(){
     unzip(temp, exdir = "./")
     # delete the temp file
     unlink(temp)
-    
-    # Seting a easier folder name
-    if(file.exists("UCI HAR Dataset")){
-        file.rename("UCI HAR Dataset", "original-data")
-    }
 }
 
 # If original data does not exists download it
-if(!dir.exists("original-data")){
+if(!dir.exists("UCI HAR Dataset")){
     downloadOriginalData()
 }
 
-# Create a folder to save the tidy data if it does not exists
-if(!dir.exists("tidy-data")){
-    dir.create("tidy-data")
-}
+# This function return a vector with the tidy collum names from features_info.txt
+getFeaturesColNames <- function(){
+    features <- read.table("./UCI HAR Dataset/features.txt", stringsAsFactor = FALSE)
 
-# this functions merges the X, Y and subject datas togheter and returns a data.frame
-mergeData <- function(pathToData){
-    #geting last part of the path to get the files base name
-    basename <- strsplit(pathToOriginalData, "/", fixed = TRUE)
-    basename <- unlist(basename)
-    basename <- basename[length(basename)]
-    basename
+    featuresNames <- sapply(features$V2, function(x){
+        # Renaming to descriptive names
+        x <- sub("^t", "time", x)
+        x <- sub("^f", "frequency", x)
+        x <- sub("Acc", "Acceleration", x)
+        
+        # Removing especial char
+        x <- gsub("-", ".", x)
+        x <- sub("\\(\\)", "", x)
+        x
+    })
     
+    featuresNames
 }
 
-pathToOriginalData <- paste0(pathToProject, "./original-data/UCI HAR Dataset/test")
+# This function read the X, Y and subject and merges then toghter.
+# Also add the colnames and return a dataframe
+mountDataSet <- function(datasetName){
+    # Create path to "X_{datasetName}.txt"
+    xFilePath <- paste0("./UCI HAR Dataset/", datasetName, "/X_", datasetName, ".txt")
+    x <- read.table(xFilePath,
+                     # 4-
+                     # Add colnames from features.txt
+                     col.names = getFeaturesColNames() 
+                     )
+
+    # Create path to "X_{datasetName}.txt"
+    yFilePath <- paste0("./UCI HAR Dataset/", datasetName, "/y_", datasetName, ".txt")
+    y <- read.table(yFilePath)
+
+    # Create path to "subject_{datasetName}.txt"
+    subjectFilePath <- paste0("./UCI HAR Dataset/", datasetName, "/subject_", datasetName, ".txt")
+    subjects <- read.table(subjectFilePath)
+
+    # Add the colluns with the identifier of the subject and activity label
+    mergedData <- mutate(x, subject = subjects$V1, activity = y$V1)
+
+    # Return the complete dataset
+    mergedData
+}
+
+# this function return a vector with the activity names
+getDescriptiveActivityNames <- function(){
+    dfActivityNames <- read.table("./UCI HAR Dataset/activity_labels.txt")
+    dfActivityNames$V2
+}
+
+# Reading the data sets
+train <- mountDataSet("train")
+test <- mountDataSet("test")
+
+# 1-
+# Merging the training and the test sets
+completeDataSet <- bind_rows(train, test)
+
+# 2-
+# Extracts only the measurements on the mean
+# and standard deviation for each measurement. 
+meanAndStd <- select(completeDataSet, contains(".mean"), contains(".std"),
+                         "subject", "activity")
+
+# vector with the activity names
+activityNames <- getDescriptiveActivityNames()
+
+# 3-
+# Add activity descriptive names to dataset
+descriptiveNames <- mutate(meanAndStd, activity = activityNames[activity])
+
+# 5-
+# Create a tidy data set with the average of each variable
+# for each activity and each subject
+
+# Create grups
+averageDataSet <- group_by(descriptiveNames, subject, activity)
+
+# Calcule the average of each variable by group
+averageDataSet <- summarise_all(averageDataSet, mean)
 
 
-test <- mergeData(pathToOriginalData)
-test
+write.table(averageDataSet, "./GettingAndCleaningDataProject.txt", row.name = FALSE)
+
+View(averageDataSet)
