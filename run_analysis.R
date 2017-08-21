@@ -59,7 +59,7 @@ mountDataSet <- function(datasetName){
     subjects <- read.table(subjectFilePath)
 
     # Add the colluns with the identifier of the subject and activity label
-    mergedData <- mutate(x, subject = subjects$V1, activity = y$V1)
+    mergedData <- mutate(x, subjectId = subjects$V1, activity = y$V1)
 
     # Return the complete dataset
     mergedData
@@ -83,7 +83,7 @@ completeDataSet <- bind_rows(train, test)
 # Extracts only the measurements on the mean
 # and standard deviation for each measurement. 
 meanAndStd <- select(completeDataSet, contains(".mean"), contains(".std"),
-                         "subject", "activity")
+                         "subjectId", "activity")
 
 # vector with the activity names
 activityNames <- getDescriptiveActivityNames()
@@ -97,7 +97,7 @@ descriptiveNames <- mutate(meanAndStd, activity = activityNames[activity])
 # for each activity and each subject
 
 # Create grups
-averageDataSet <- group_by(descriptiveNames, subject, activity)
+averageDataSet <- group_by(descriptiveNames, subjectId, activity)
 
 # Calcule the average of each variable by group
 averageDataSet <- summarise_all(averageDataSet, mean)
