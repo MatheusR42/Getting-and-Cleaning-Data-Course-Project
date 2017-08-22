@@ -1,7 +1,18 @@
 # Getting and Cleaning Data Course Project
 
-This repository contains the files needed to download, merge and tidy
+This repository contains the files needed to download, merge, group and tidy
 the Human Activity Recognition Using Smartphones Data Set Version 1.0.
+
+The final tidy data set looks like this:
+
+| subjectId     | activity      | timeBodyAcceleration.mean.X  	| timeBodyAcceleration.mean.Y  	|
+| ------------- |:-------------:| -----:						| -----:						|
+| 1             | STANDING      | 0.2789176 					| -0.03241094 					|
+| 1             | WALKING      	|   0.2773308 					|   -0.03238440					|
+| ... 			| ...      		|    ... 						|    ... 						|
+| 2             | LAYING      	| 0.2813734 					| -0.03198043					|
+| 2             | SITTING      	|   0.2770874 					|  -0.03039866					|
+
 
 The original experiment data was taking by Smartlab - Non Linear Complex Systems Laboratory at DITEN - Università degli Studi di Genova. More information can be found in this link:
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
