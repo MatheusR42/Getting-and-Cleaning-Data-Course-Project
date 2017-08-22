@@ -102,7 +102,9 @@ averageDataSet <- group_by(descriptiveNames, subjectId, activity)
 # Calcule the average of each variable by group
 averageDataSet <- summarise_all(averageDataSet, mean)
 
+# Writes the final data set
 write.table(averageDataSet, "./GettingAndCleaningDataProject.txt", row.name = FALSE)
 
+# Reads the final data set
 finalDataSet <- read.table("./GettingAndCleaningDataProject.txt", header = TRUE)
 View(finalDataSet)
