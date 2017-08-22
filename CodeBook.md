@@ -24,7 +24,7 @@ The final tidy data set has three main types of variables, subject identifier, a
 
 * **Format:** numeric/float.
 
-* **Description:** The average of each variable feature variable from original data set. The original features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. More information about the original data can be found in [features_info.txt](/Getting-and-Cleaning-Data-Course-Project/blob/master/feature_info.txt).
+* **Description:** The average of each variable feature variable from original data set. The original features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. More information about the original data can be found in [features_info.txt](https://github.com/MatheusR42/Getting-and-Cleaning-Data-Course-Project/blob/master/feature_info.txt).
 
 mean: Mean value
 std: Standard deviation
