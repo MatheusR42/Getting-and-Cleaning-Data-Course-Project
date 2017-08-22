@@ -25,7 +25,7 @@ This script do the follow steps:
 
 * Download the original data set if needed
 * Mount the train and test tables
-* Merges the tables togheter
+* Merges the tables together
 * Insert descriptive names to colluns
 * Add labels to activity rows
 * Extract only the mean an standard deviation measurements
